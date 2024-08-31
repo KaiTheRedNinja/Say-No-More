@@ -10,6 +10,9 @@ import Foundation
 /// Manages a Taboo game
 @Observable
 class SNGameManager {
+    /// The card provider
+    public var cardProvider: any SNCardProvider
+
     /// The game that this manager is managing
     private(set) var game: SNGame
     /// If a turn is currently happening, meaning the last turn in ``game``'s ``SNGame/turns`` is currently
@@ -21,7 +24,8 @@ class SNGameManager {
     /// The undo record, where the last element is the most recent win/forfeit card action
     private var undoRecord: [SNCardPlay] = []
 
-    init() {
+    init(cardProvider: any SNCardProvider) {
+        self.cardProvider = cardProvider
         self.game = .init(turns: [])
     }
 
@@ -85,7 +89,7 @@ class SNGameManager {
     /// Undoes the last win/forfeit action
     func undoLastAction() {
         guard turnIsActive,
-              let lastAction = undoRecord.last,
+              let lastAction = undoRecord.popLast(),
               var currentTurn = game.turns.last
         else { return }
 
@@ -100,8 +104,11 @@ class SNGameManager {
         // update the current turn
         game.turns[game.turns.count-1] = currentTurn
 
-        // put the card back into the "pile"
-        putCardBackInPile(lastAction.card)
+        // put the current card back into the "pile", and restore the previous card as the current card
+        if let currentCard {
+            putCardBackInPile(currentCard)
+        }
+        currentCard = lastAction.card
     }
 
     /// Regenerates the current card. Does not mark it as won/forfeited, and should only be called once actions on
@@ -110,7 +117,7 @@ class SNGameManager {
         guard turnIsActive else { return }
         currentCard = nil
 
-        // TODO: regenerate current card
+        currentCard = cardProvider.takeCard()
     }
 
     /// Puts a card back into the pile, such that the next card called by ``regenerateCurrentCard()`` is this one.
@@ -119,7 +126,7 @@ class SNGameManager {
     private func putCardBackInPile(_ card: SNCard) {
         guard turnIsActive else { return }
 
-        // TODO: put card back into pile
+        cardProvider.putCard(card)
     }
 }
 
