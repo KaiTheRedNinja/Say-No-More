@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct Say_No_MoreApp: App {
+struct Say_No_MoreApp: App { // swiftlint:disable:this type_name
     var body: some Scene {
         WindowGroup {
             ContentView()
