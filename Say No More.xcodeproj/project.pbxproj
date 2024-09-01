@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		93EA600D2C84226E00662291 /* BezelKit in Frameworks */ = {isa = PBXBuildFile; productRef = 93EA600C2C84226E00662291 /* BezelKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		9366A1232C83570D0018F9F3 /* Say No More.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Say No More.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93EA600D2C84226E00662291 /* BezelKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +71,7 @@
 			);
 			name = "Say No More";
 			packageProductDependencies = (
+				93EA600C2C84226E00662291 /* BezelKit */,
 			);
 			productName = "Say No More";
 			productReference = 9366A1232C83570D0018F9F3 /* Say No More.app */;
@@ -95,6 +101,9 @@
 			);
 			mainGroup = 9366A11A2C83570D0018F9F3;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				93EA600B2C84226E00662291 /* XCRemoteSwiftPackageReference "BezelKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9366A1242C83570D0018F9F3 /* Products */;
 			projectDirPath = "";
@@ -349,6 +358,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		93EA600B2C84226E00662291 /* XCRemoteSwiftPackageReference "BezelKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/markbattistella/BezelKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2024.8.12;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		93EA600C2C84226E00662291 /* BezelKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93EA600B2C84226E00662291 /* XCRemoteSwiftPackageReference "BezelKit" */;
+			productName = BezelKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9366A11B2C83570D0018F9F3 /* Project object */;
 }
