@@ -41,9 +41,9 @@ class SNGameManager {
             forfeitedCards: []
         )
 
+        turnIsActive = true
         regenerateCurrentCard()
         game.turns.append(newTurn)
-        turnIsActive = true
     }
 
     /// Ends the current turn
@@ -115,8 +115,6 @@ class SNGameManager {
     /// ``currentCard`` have been finished.
     private func regenerateCurrentCard() {
         guard turnIsActive else { return }
-        currentCard = nil
-
         currentCard = cardProvider.takeCard()
     }
 

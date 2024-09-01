@@ -8,7 +8,7 @@
 import Foundation
 
 /// An instance representing a single Taboo "card"
-struct SNCard: Codable, Identifiable {
+struct SNCard: Codable, Identifiable, Equatable {
     var id: UUID = .init()
 
     var word: String = ""

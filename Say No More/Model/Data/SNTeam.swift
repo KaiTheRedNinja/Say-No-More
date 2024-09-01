@@ -8,7 +8,7 @@
 import Foundation
 
 /// An instance representing a Taboo "team", of which there are only two
-enum SNTeam: String, Codable, Identifiable {
+enum SNTeam: String, Codable, Identifiable, Equatable {
     /// The first team, which plays the first turn
     case team1 = "Team 1"
     /// The second team, which plays the second turn

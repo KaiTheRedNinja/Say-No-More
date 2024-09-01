@@ -8,7 +8,7 @@
 import Foundation
 
 /// An instance representing a Taboo "game", including teams, scores, and past cards
-struct SNGame: Codable, Identifiable {
+struct SNGame: Codable, Identifiable, Equatable {
     var id: UUID = .init()
 
     /// A catalogue of turns within the game, where the first element is the first turn

@@ -8,7 +8,7 @@
 import Foundation
 
 /// An instance representing a single Taboo "turn"
-struct SNTurn: Codable, Identifiable {
+struct SNTurn: Codable, Identifiable, Equatable {
     var id: UUID = .init()
 
     /// The team that is playing the turn
