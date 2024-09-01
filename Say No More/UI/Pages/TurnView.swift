@@ -88,6 +88,46 @@ struct TurnView: View {
 
     var buttonsView: some View {
         VStack {
+            HStack {
+                Button {
+                    // TODO: exit
+                } label: {
+                    ZStack {
+                        // we use this to get the nice drop shadow for the checkmark, so that
+                        // it doesn't intersect the tick
+                        Image(systemName: "chevron.left")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(.black)
+                            .padding(4)
+                    }
+                    .frame(width: 40, height: 40)
+                }
+
+                Spacer()
+
+                Button {
+                    if timerData.isPaused {
+                        timerData.start()
+                    } else {
+                        timerData.pause()
+                    }
+                } label: {
+                    ZStack {
+                        // we use this to get the nice drop shadow for the checkmark, so that
+                        // it doesn't intersect the tick
+                        Image(systemName: timerData.isPaused ? "play" : "pause")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(.primary)
+                            .padding(4)
+                            .contentTransition(.symbolEffect(.replace))
+                    }
+                    .frame(width: 40, height: 40)
+                }
+            }
+            .padding([.horizontal, .top], .deviceBezel - 20)
+
             Spacer()
 
             HStack {
@@ -95,12 +135,10 @@ struct TurnView: View {
                     sendCard(won: true)
                 } label: {
                     ZStack {
-                        // we use this to get the nice drop shadow for the checkmark, so that
-                        // it doesn't intersect the tick
-                        Circle()
-                            .stroke(.primary, lineWidth: 4)
-                            .fill(.background)
-                            .padding(3)
+                        Image(systemName: "circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(.background)
                             .shadow(color: .green, radius: 5)
                         Image(systemName: "checkmark.circle.fill")
                             .resizable()
@@ -109,20 +147,7 @@ struct TurnView: View {
                     }
                     .frame(width: 60, height: 60)
                 }
-                .phaseAnimator(
-                    [true, false],
-                    trigger: gameManager.game.turns.last?.wonCards
-                ) { content, value in
-                    content
-                        .offset(y: value ? 0 : -20)
-                        .scaleEffect(.init(value ? 1 : 1.1), anchor: .bottomLeading)
-                } animation: { value in
-                    if !value {
-                        .linear(duration: 0.2)
-                    } else {
-                        .bouncy(duration: 0.4, extraBounce: 0.3)
-                    }
-                }
+                .symbolEffect(.bounce, value: gameManager.game.turns.last?.wonCards)
 
                 Spacer()
 
@@ -130,10 +155,10 @@ struct TurnView: View {
                     sendCard(won: false)
                 } label: {
                     ZStack {
-                        Circle()
-                            .stroke(.primary, lineWidth: 4)
-                            .fill(.background)
-                            .padding(3)
+                        Image(systemName: "circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(.background)
                             .shadow(color: .red, radius: 5)
                         Image(systemName: "xmark.circle.fill")
                             .resizable()
@@ -142,23 +167,11 @@ struct TurnView: View {
                     }
                     .frame(width: 60, height: 60)
                 }
-                .phaseAnimator(
-                    [true, false],
-                    trigger: gameManager.game.turns.last?.forfeitedCards
-                ) { content, value in
-                    content
-                        .offset(y: value ? 0 : -20)
-                        .scaleEffect(.init(value ? 1 : 1.1), anchor: .bottomTrailing)
-                } animation: { value in
-                    if !value {
-                        .linear(duration: 0.2)
-                    } else {
-                        .bouncy(duration: 0.4, extraBounce: 0.3)
-                    }
-                }
+                .symbolEffect(.bounce, value: gameManager.game.turns.last?.forfeitedCards)
             }
             .padding([.horizontal, .bottom], .deviceBezel - 30)
         }
+        .buttonStyle(.plain)
     }
 
     func decideCardFinalLocation(endLocation: CGPoint) {
