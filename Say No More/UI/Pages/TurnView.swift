@@ -12,6 +12,9 @@ import BezelKit
 ///
 /// This view also controls starting and ending the timer, and will automatically start the turn's timer when this view
 /// appears. It assumes that the game manager's turn has already started.
+///
+/// Note that `TurnView`does not end the turn when ``turnComplete`` is called. It is up to the implementation
+/// of ``turnComplete`` to do that.
 struct TurnView: View {
     @State var gameManager: SNGameManager
     @State private var timerData: SNTimer
@@ -19,6 +22,9 @@ struct TurnView: View {
     @State private var screenRect: CGRect = .zero
     @State private var dragTranslation: CGSize = .zero
     @State private var cardScale: CGFloat = 1
+
+    @Environment(\.dismiss)
+    var dismiss
 
     var turnComplete: () -> Void
 
@@ -90,7 +96,7 @@ struct TurnView: View {
         VStack {
             HStack {
                 Button {
-                    // TODO: exit
+                    dismiss.callAsFunction()
                 } label: {
                     ZStack {
                         // we use this to get the nice drop shadow for the checkmark, so that

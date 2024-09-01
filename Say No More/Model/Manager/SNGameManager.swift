@@ -24,9 +24,9 @@ class SNGameManager {
     /// The undo record, where the last element is the most recent win/forfeit card action
     private var undoRecord: [SNCardPlay] = []
 
-    init(cardProvider: any SNCardProvider) {
+    init(game: SNGame = .init(turns: []), cardProvider: any SNCardProvider) {
         self.cardProvider = cardProvider
-        self.game = .init(turns: [])
+        self.game = game
     }
 
     /// Starts the next turn
