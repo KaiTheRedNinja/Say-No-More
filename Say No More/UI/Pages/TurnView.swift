@@ -96,12 +96,10 @@ struct TurnView: View {
         VStack {
             HStack {
                 Button {
-                    dismiss.callAsFunction()
+                    turnComplete()
                 } label: {
                     ZStack {
-                        // we use this to get the nice drop shadow for the checkmark, so that
-                        // it doesn't intersect the tick
-                        Image(systemName: "chevron.left")
+                        Image(systemName: "forward.fill")
                             .resizable()
                             .scaledToFit()
                             .foregroundStyle(.black)
@@ -120,8 +118,6 @@ struct TurnView: View {
                     }
                 } label: {
                     ZStack {
-                        // we use this to get the nice drop shadow for the checkmark, so that
-                        // it doesn't intersect the tick
                         Image(systemName: timerData.isPaused ? "play" : "pause")
                             .resizable()
                             .scaledToFit()
