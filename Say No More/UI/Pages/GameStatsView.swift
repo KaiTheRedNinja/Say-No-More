@@ -270,26 +270,6 @@ struct GameStatsView: View {
     }
 }
 
-private extension SNTurn {
-    init(team: SNTeam, won: Int, forfeit: Int) {
-        self.init(
-            team: team,
-            wonCards: (0..<won).map { index in
-                .init(
-                    word: "Won \(index)",
-                    forbiddenWords: ["A", "B", "C", "D", "E"].map { "\($0)\(index)" }
-                )
-            },
-            forfeitedCards: (0..<forfeit).map { index in
-                .init(
-                    word: "Forfeit \(index)",
-                    forbiddenWords: ["V", "W", "X", "Y", "Z"].map { "\($0)\(index)" }
-                )
-            }
-        )
-    }
-}
-
 #Preview {
     GameStatsView(
         game: .init(

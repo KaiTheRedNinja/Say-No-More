@@ -21,3 +21,26 @@ struct SNTurn: Codable, Identifiable, Equatable {
     /// The net gain of points
     var netPoints: Int { wonCards.count - forfeitedCards.count }
 }
+
+#if !DEBUG
+@available(swift, obsoleted: 1.0)
+#endif
+extension SNTurn {
+    init(team: SNTeam, won: Int, forfeit: Int) {
+        self.init(
+            team: team,
+            wonCards: (0..<won).map { index in
+                    .init(
+                        word: "Won \(index)",
+                        forbiddenWords: ["A", "B", "C", "D", "E"].map { "\($0)\(index)" }
+                    )
+            },
+            forfeitedCards: (0..<forfeit).map { index in
+                    .init(
+                        word: "Forfeit \(index)",
+                        forbiddenWords: ["V", "W", "X", "Y", "Z"].map { "\($0)\(index)" }
+                    )
+            }
+        )
+    }
+}
