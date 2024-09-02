@@ -18,10 +18,7 @@ import BezelKit
 struct TurnView: View {
     @State var gameManager: SNGameManager
     @State private var timerData: SNTimer
-
-    @State private var screenRect: CGRect = .zero
-    @State private var dragTranslation: CGSize = .zero
-    @State private var cardScale: CGFloat = 1
+    @State private var cards: [DraggableCardData] = []
 
     @Environment(\.dismiss)
     var dismiss
@@ -36,6 +33,10 @@ struct TurnView: View {
         self.gameManager = gameManager
         self.turnComplete = turnComplete
         self.timerData = timerData
+
+        if let currentCard = gameManager.currentCard {
+            cards.append(.init(card: currentCard))
+        }
     }
 
     var body: some View {
@@ -47,20 +48,28 @@ struct TurnView: View {
             GeometryReader { geom in
                 ZStack {
                     Color.clear
-
-                    if let currentCard = gameManager.currentCard {
-                        draggableCard(currentCard)
-                            .frame(
-                                width: geom.size.width * 0.6,
-                                height: geom.size.height * 0.6
-                            )
+                        .onChange(of: gameManager.currentCard) { _, _ in
+                            if let currentCard = gameManager.currentCard {
+                                cards.append(.init(card: currentCard))
+                            }
+                        }
+                    ForEach(cards.reversed(), id: \.card.id) { card in
+                        DraggableCardView(
+                            data: card,
+                            screenRect: geom.frame(in: .global),
+                            markWon: {
+                                gameManager.markCurrentCardAsWon()
+                            },
+                            markForfeit: {
+                                gameManager.markCurrentCardAsForfeited()
+                            },
+                            animationComplete: {
+                                // removes this card
+                                cards.removeAll(where: { $0.card.id == card.card.id })
+                            }
+                        )
+                        .id(card.card.id)
                     }
-                }
-                .onAppear {
-                    self.screenRect = geom.frame(in: .global)
-                }
-                .onChange(of: geom.frame(in: .global)) { _, _ in
-                    self.screenRect = geom.frame(in: .global)
                 }
             }
 
@@ -70,26 +79,6 @@ struct TurnView: View {
         .onAppear {
             timerData.start()
         }
-    }
-
-    func draggableCard(_ card: SNCard) -> some View {
-        CardView(card: card)
-            .scaleEffect(cardScale)
-            .offset(dragTranslation)
-            .gesture(
-                DragGesture(coordinateSpace: .global)
-                    .onChanged { value in
-                        withAnimation(.interactiveSpring) {
-                            dragTranslation = .init(
-                                width: value.translation.width * 1.1,
-                                height: value.translation.height * 1.1
-                            )
-                        }
-                    }
-                    .onEnded { value in
-                        decideCardFinalLocation(endLocation: value.predictedEndLocation)
-                    }
-            )
     }
 
     var buttonsView: some View {
@@ -134,7 +123,7 @@ struct TurnView: View {
 
             HStack {
                 Button {
-                    sendCard(won: true)
+                    cards.last?.state = .won
                 } label: {
                     ZStack {
                         Image(systemName: "circle.fill")
@@ -154,7 +143,7 @@ struct TurnView: View {
                 Spacer()
 
                 Button {
-                    sendCard(won: false)
+                    cards.last?.state = .forfeit
                 } label: {
                     ZStack {
                         Image(systemName: "circle.fill")
@@ -175,62 +164,10 @@ struct TurnView: View {
         }
         .buttonStyle(.plain)
     }
-
-    func decideCardFinalLocation(endLocation: CGPoint) {
-        // determine if the projected end location is in the bottom third of the screen,
-        // and either the left or right third of the screen
-        guard endLocation.y > screenRect.height * 0.66,
-              endLocation.x < screenRect.width * 0.33 ||
-                endLocation.x > screenRect.width * 0.66
-        else {
-            // if its not, return it to the center of the screen
-            withAnimation(.spring) {
-                dragTranslation = .zero
-            }
-
-            return
-        }
-
-        // determine where to "send" the card
-        let won = endLocation.x < screenRect.width * 0.33
-
-        sendCard(won: won)
-    }
-
-    func sendCard(won: Bool) {
-        // send it to the correct corner
-        let location: CGPoint = if won {
-            CGPoint(x: screenRect.minX + 50, y: screenRect.maxY - 50)
-        } else {
-            CGPoint(x: screenRect.maxX - 50, y: screenRect.maxY - 50)
-        }
-
-        // mark it as either won or forfeit
-        if won {
-            gameManager.markCurrentCardAsWon()
-        } else {
-            gameManager.markCurrentCardAsForfeited()
-        }
-
-        // convert it to an ofset
-        let center = CGPoint(x: screenRect.midX, y: screenRect.midY)
-        let offset = CGSize(
-            width: location.x - center.x,
-            height: location.y - center.y
-        )
-
-        withAnimation(.spring) {
-            dragTranslation = offset
-            cardScale = 0.1
-        } completion: {
-            dragTranslation = .zero
-            cardScale = 1
-        }
-    }
 }
 
 private struct TurnPreview: View {
-    @State var gameManager: SNGameManager = .init(cardProvider: SNTestingCardProvider())
+    @State var gameManager: SNGameManager = .init(cardProvider: SNSequentialCardProvider())
 
     var body: some View {
         TurnView(
