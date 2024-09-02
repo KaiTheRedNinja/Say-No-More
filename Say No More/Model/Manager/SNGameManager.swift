@@ -21,9 +21,6 @@ class SNGameManager {
     /// The current card. DO NOT assume that this value is populated at any point in time.
     private(set) var currentCard: SNCard?
 
-    /// The undo record, where the last element is the most recent win/forfeit card action
-    private var undoRecord: [SNCardPlay] = []
-
     init(game: SNGame = .init(turns: []), cardProvider: any SNCardProvider) {
         self.cardProvider = cardProvider
         self.game = game
@@ -64,7 +61,6 @@ class SNGameManager {
         // update the current turn
         currentTurn.wonCards.append(currentCard)
         game.turns[game.turns.count-1] = currentTurn
-        undoRecord.append(.init(card: currentCard, status: .won))
 
         // regenerate the current card
         regenerateCurrentCard()
@@ -80,50 +76,15 @@ class SNGameManager {
         // update the current turn
         currentTurn.forfeitedCards.append(currentCard)
         game.turns[game.turns.count-1] = currentTurn
-        undoRecord.append(.init(card: currentCard, status: .forfeit))
 
         // regenerate the current card
         regenerateCurrentCard()
-    }
-
-    /// Undoes the last win/forfeit action
-    func undoLastAction() {
-        guard turnIsActive,
-              let lastAction = undoRecord.popLast(),
-              var currentTurn = game.turns.last
-        else { return }
-
-        // remove the card from where it went
-        switch lastAction.status {
-        case .won:
-            currentTurn.wonCards.removeLast()
-        case .forfeit:
-            currentTurn.forfeitedCards.removeLast()
-        }
-
-        // update the current turn
-        game.turns[game.turns.count-1] = currentTurn
-
-        // put the current card back into the "pile", and restore the previous card as the current card
-        if let currentCard {
-            putCardBackInPile(currentCard)
-        }
-        currentCard = lastAction.card
     }
 
     /// Regenerates the current card. Does not mark it as won/forfeited, and should only be called once actions on
     /// ``currentCard`` have been finished.
     private func regenerateCurrentCard() {
         currentCard = cardProvider.takeCard()
-    }
-
-    /// Puts a card back into the pile, such that the next card called by ``regenerateCurrentCard()`` is this one.
-    ///
-    /// Does not change the current card or the game state
-    private func putCardBackInPile(_ card: SNCard) {
-        guard turnIsActive else { return }
-
-        cardProvider.putCard(card)
     }
 }
 

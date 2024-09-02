@@ -71,12 +71,8 @@ class SNTestingCardProvider: SNCardProvider {
     }
 
     func takeCard() -> SNCard? {
-        print("Last card: \(cards.last)")
+        print("Last card: \(cards.last.debugDescription)")
         return cards.popLast()
-    }
-
-    func putCard(_ card: SNCard) {
-        cards.append(card)
     }
 }
 /// A card provider that creates cards via numeric sequences
@@ -93,10 +89,6 @@ class SNSequentialCardProvider: SNCardProvider {
             word: "Word \(index)",
             forbiddenWords: ["A", "B", "C", "D", "E"].map { "\($0)\(index)" }
         )
-    }
-
-    func putCard(_ card: SNCard) {
-        fatalError("Not implemented")
     }
 }
 

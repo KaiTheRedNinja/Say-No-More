@@ -9,8 +9,4 @@ class SNLLMCardProvider: SNCardProvider {
     func takeCard() -> SNCard? {
         fatalError("Not implemented yet")
     }
-
-    func putCard(_ card: SNCard) {
-        fatalError("Not implemented yet")
-    }
 }
