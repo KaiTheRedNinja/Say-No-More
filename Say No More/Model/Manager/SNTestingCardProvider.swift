@@ -5,6 +5,8 @@
 //  Created by Kai Quan Tay on 1/9/24.
 //
 
+#if DEBUG
+
 import Foundation
 
 private let testingCards: [SNCard] = [
@@ -60,6 +62,7 @@ private let testingCards: [SNCard] = [
     )
 ]
 
+/// A card provider that uses a collection of testing cards
 class SNTestingCardProvider: SNCardProvider {
     var cards: [SNCard]
 
@@ -76,3 +79,25 @@ class SNTestingCardProvider: SNCardProvider {
         cards.append(card)
     }
 }
+/// A card provider that creates cards via numeric sequences
+class SNSequentialCardProvider: SNCardProvider {
+    var index: Int
+
+    init(index: Int = 0) {
+        self.index = index
+    }
+
+    func takeCard() -> SNCard? {
+        index += 1
+        return .init(
+            word: "Word \(index)",
+            forbiddenWords: ["A", "B", "C", "D", "E"].map { "\($0)\(index)" }
+        )
+    }
+
+    func putCard(_ card: SNCard) {
+        fatalError("Not implemented")
+    }
+}
+
+#endif

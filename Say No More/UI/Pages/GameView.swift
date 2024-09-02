@@ -50,5 +50,5 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView(gameManager: .init(cardProvider: SNTestingCardProvider()))
+    GameView(gameManager: .init(cardProvider: SNSequentialCardProvider()))
 }
