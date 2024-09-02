@@ -14,13 +14,16 @@ import SwiftUI
 struct IntermissionView: View {
     @State var gameManager: SNGameManager
 
-    @Environment(\.dismiss)
-    var dismiss
-
+    var gameEnd: () -> Void
     var turnStart: () -> Void
 
-    init(gameManager: SNGameManager, turnStart: @escaping () -> Void) {
+    init(
+        gameManager: SNGameManager,
+        gameEnd: @escaping () -> Void,
+        turnStart: @escaping () -> Void
+    ) {
         self.gameManager = gameManager
+        self.gameEnd = gameEnd
         self.turnStart = turnStart
     }
 
@@ -81,7 +84,7 @@ struct IntermissionView: View {
             Section { // next turn buttons
                 HStack {
                     Button {
-                        dismiss.callAsFunction()
+                        gameEnd()
                     } label: {
                         RoundedRectangle(cornerRadius: 15)
                             .fill(Color.gray.opacity(0.6))
@@ -172,7 +175,7 @@ struct IntermissionView: View {
             ]),
             cardProvider: SNTestingCardProvider()
         ),
-        turnStart: {
-        }
+        gameEnd: {},
+        turnStart: {}
     )
 }

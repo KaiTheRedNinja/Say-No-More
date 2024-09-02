@@ -33,10 +33,6 @@ struct TurnView: View {
         self.gameManager = gameManager
         self.turnComplete = turnComplete
         self.timerData = timerData
-
-        if let currentCard = gameManager.currentCard {
-            cards.append(.init(card: currentCard))
-        }
     }
 
     var body: some View {
@@ -77,6 +73,9 @@ struct TurnView: View {
         }
         .ignoresSafeArea()
         .onAppear {
+            if let currentCard = gameManager.currentCard {
+                cards.append(.init(card: currentCard))
+            }
             timerData.start()
         }
     }

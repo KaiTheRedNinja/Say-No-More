@@ -33,16 +33,16 @@ class SNGameManager {
     func startNextTurn() {
         guard !turnIsActive else { return }
 
-        // determine the current team
-        let currentTeam = game.turns.last?.team ?? .team1
+        // determine the new team
+        let newTeam = game.turns.last?.team.opponent() ?? .team1
         let newTurn = SNTurn(
-            team: currentTeam,
+            team: newTeam,
             wonCards: [],
             forfeitedCards: []
         )
 
-        turnIsActive = true
         regenerateCurrentCard()
+        turnIsActive = true
         game.turns.append(newTurn)
     }
 
@@ -114,7 +114,6 @@ class SNGameManager {
     /// Regenerates the current card. Does not mark it as won/forfeited, and should only be called once actions on
     /// ``currentCard`` have been finished.
     private func regenerateCurrentCard() {
-        guard turnIsActive else { return }
         currentCard = cardProvider.takeCard()
     }
 

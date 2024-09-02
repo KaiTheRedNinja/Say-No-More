@@ -9,42 +9,53 @@ import SwiftUI
 
 struct GameView: View {
     @State var gameManager: SNGameManager
+    @State var gameState: GameState = .countdown
 
-    @State var showCountdown: Bool = false
+    enum GameState {
+        case countdown
+        case turn
+        case intermission
+        case finish
+    }
 
     var body: some View {
         ZStack {
-            if gameManager.turnIsActive {
-                if showCountdown {
-                    CountdownView(
-                        duration: 3,
-                        countdownComplete: {
-                            showCountdown = false
-                        }
-                    )
-                } else {
-                    TurnView(
-                        gameManager: gameManager,
-                        turnComplete: {
-                            gameManager.endCurrentTurn()
-                        }
-                    )
-                }
-            } else {
-                IntermissionView(
-                    gameManager: gameManager,
-                    turnStart: {
-                        showCountdown = true
-                        gameManager.startNextTurn()
+            switch gameState {
+            case .countdown:
+                CountdownView(
+                    duration: 3,
+                    countdownComplete: {
+                        gameState = .turn
                     }
                 )
+            case .turn:
+                TurnView(
+                    gameManager: gameManager,
+                    turnComplete: {
+                        gameManager.endCurrentTurn()
+                        gameState = .intermission
+                    }
+                )
+            case .intermission:
+                IntermissionView(
+                    gameManager: gameManager,
+                    gameEnd: {
+                        gameState = .finish
+                    },
+                    turnStart: {
+                        gameManager.startNextTurn()
+                        gameState = .countdown
+                    }
+                )
+            case .finish:
+                GameStatsView(game: gameManager.game)
             }
         }
         .animation(.default, value: gameManager.turnIsActive)
-        .animation(.default, value: showCountdown)
+        .animation(.default, value: gameState)
         .onAppear {
             gameManager.startNextTurn()
-            showCountdown = true
+            gameState = .countdown
         }
     }
 }
