@@ -18,9 +18,17 @@ struct SNGame: Codable, Identifiable, Equatable {
     ///
     /// For each turn, a won card is +1 point to the team playing the turn, a forfeited card is +1 point to
     /// the opposite team.
-    func pointsFor(team: SNTeam) -> Int {
+    func pointsFor(team: SNTeam, upToTurn: Int = -1) -> Int {
         let opponent = team.opponent()
-        return turns.reduce(0) { score, turn in
+
+        let turnsSample: [SNTurn]
+        if upToTurn >= 0 {
+            turnsSample = Array(turns.prefix(through: upToTurn))
+        } else {
+            turnsSample = turns
+        }
+
+        return turnsSample.reduce(0) { score, turn in
             switch turn.team {
             case team:
                 return score + turn.wonCards.count

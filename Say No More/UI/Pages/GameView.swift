@@ -43,8 +43,8 @@ struct GameView: View {
         .animation(.default, value: gameManager.turnIsActive)
         .animation(.default, value: showCountdown)
         .onAppear {
-            showCountdown = true
             gameManager.startNextTurn()
+            showCountdown = true
         }
     }
 }
