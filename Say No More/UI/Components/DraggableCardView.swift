@@ -32,7 +32,7 @@ struct DraggableCardView: View {
     var animationComplete: () -> Void
 
     @State private var dragTranslation: CGSize = .zero
-    @State private var cardScale: CGFloat = 1
+    @State private var cardScale: CGFloat = 0
 
     /// Creates a draggable card view
     /// - Parameters:
@@ -82,6 +82,11 @@ struct DraggableCardView: View {
                 case .idle: break
                 case .won: sendCard(won: true)
                 case .forfeit: sendCard(won: false)
+                }
+            }
+            .onAppear {
+                withAnimation(.bouncy) {
+                    cardScale = 1
                 }
             }
     }

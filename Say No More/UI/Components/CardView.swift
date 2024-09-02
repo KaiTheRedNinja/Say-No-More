@@ -12,9 +12,12 @@ struct CardView: View {
     var cardColor: Color = .blue
 
     var body: some View {
-        VStack {
+        ZStack {
             RoundedRectangle(cornerRadius: 20)
-                .fill(cardColor.opacity(0.15))
+                .fill(.background)
+
+            RoundedRectangle(cornerRadius: 20)
+                .fill(cardColor.opacity(0.2))
                 .stroke(
                     cardColor,
                     style: .init(
