@@ -30,11 +30,48 @@ struct GameStatsView: View {
         }
     }
 
+    enum Statistic: CaseIterable {
+        case averageWon
+        case averageForfeit
+        case bestTurn
+
+        var description: String {
+            switch self {
+            case .averageWon: "Average Cards Won per Turn"
+            case .averageForfeit: "Average Cards Forfeited per Turn"
+            case .bestTurn: "Points won in best turn"
+            }
+        }
+
+        func `for`(game: SNGame, team: SNTeam) -> Double {
+            let relevantGames = game.turns.filter { $0.team == team }
+
+            switch self {
+            case .averageWon:
+                let total = relevantGames.reduce(0) { partialResult, value in
+                    partialResult + value.wonCards.count
+                }
+
+                return Double(total) / Double(relevantGames.count)
+            case .averageForfeit:
+                let total = relevantGames.reduce(0) { partialResult, value in
+                    partialResult + value.forfeitedCards.count
+                }
+
+                return Double(total) / Double(relevantGames.count)
+            case .bestTurn:
+                let best = relevantGames.max { $0.netPoints < $1.netPoints }
+                return Double(best?.netPoints ?? 0)
+            }
+        }
+    }
+
     var body: some View {
         List {
             winnerSection
             gameScoresSection
             scoresChartSection
+            statsSection
             turnBreakdownSection
         }
         .scrollContentBackground(.hidden)
@@ -138,7 +175,7 @@ struct GameStatsView: View {
                 }
             }
             .chartForegroundStyleScale([
-                "Team 1": .green, "Team 2": .purple
+                "Team 1": .orange, "Team 2": .purple
             ])
             .padding(.top, 14)
             .padding(.bottom, 10)
@@ -146,10 +183,90 @@ struct GameStatsView: View {
         }
     }
 
+    var statsSection: some View {
+        Section("Stats") {
+            VStack {
+                HStack {
+                    Spacer()
+                    Text("Team 1")
+                    Spacer()
+                    Text("Stat")
+                    Spacer()
+                    Text("Team 2")
+                    Spacer()
+                }
+                Divider()
+            }
+            .padding(.top, 5)
+
+            ForEach(Statistic.allCases, id: \.self) { stat in
+                HStack {
+                    Spacer()
+                    Text(String(
+                        format: "%.1f",
+                        stat.for(game: game, team: .team1)
+                    ))
+                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .foregroundStyle(.orange)
+
+                    Spacer()
+
+                    Text(stat.description)
+                        .font(.system(.subheadline, weight: .bold))
+                        .multilineTextAlignment(.center)
+                        .containerRelativeFrame(.horizontal, count: 3, spacing: 0)
+
+                    Spacer()
+
+                    Text(String(
+                        format: "%.1f",
+                        stat.for(game: game, team: .team2)
+                    ))
+                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .foregroundStyle(.purple)
+                    Spacer()
+                }
+            }
+        }
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color(uiColor: .systemGroupedBackground))
+    }
+
     var turnBreakdownSection: some View {
         Section("Turn Breakdown") {
-            Text("TODO")
+            VStack {
+                HStack {
+                    Spacer()
+                    Text("Won")
+                    Spacer()
+                    Text("Team Name")
+                    Spacer()
+                    Text("Forfeit")
+                    Spacer()
+                }
+                Divider()
+            }
+            .padding(.top, 5)
+
+            ForEach(game.turns, id: \.id) { turn in
+                HStack {
+                    Spacer()
+                    Text("\(turn.wonCards.count)")
+                        .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                        .foregroundStyle(.green)
+                    Spacer()
+                    Text(turn.team.rawValue)
+                        .font(.system(.title, weight: .bold))
+                    Spacer()
+                    Text("\(turn.wonCards.count)")
+                        .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                        .foregroundStyle(.red)
+                    Spacer()
+                }
+            }
         }
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color(uiColor: .systemGroupedBackground))
     }
 }
 
@@ -177,10 +294,10 @@ private extension SNTurn {
     GameStatsView(
         game: .init(
             turns: [
-                .init(team: .team1, won: 3, forfeit: 1),
+                .init(team: .team1, won: 10, forfeit: 1),
                 .init(team: .team2, won: 4, forfeit: 0),
                 .init(team: .team1, won: 5, forfeit: 1),
-                .init(team: .team2, won: 3, forfeit: 0),
+                .init(team: .team2, won: 3, forfeit: 1),
                 .init(team: .team1, won: 1, forfeit: 0),
                 .init(team: .team2, won: 5, forfeit: 2)
             ]

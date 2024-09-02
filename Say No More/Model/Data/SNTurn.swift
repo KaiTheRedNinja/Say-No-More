@@ -17,4 +17,7 @@ struct SNTurn: Codable, Identifiable, Equatable {
     var wonCards: [SNCard]
     /// The cards the team forfeited, where the first element is the first card forfeited
     var forfeitedCards: [SNCard]
+
+    /// The net gain of points
+    var netPoints: Int { wonCards.count - forfeitedCards.count }
 }
