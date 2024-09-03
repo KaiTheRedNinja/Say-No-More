@@ -71,6 +71,7 @@ final class SNArchiveManager: ArchiveManager {
     }
 }
 
+@Observable
 final class SNArchiveMockManager: ArchiveManager {
     var gamesArchive: [Date: SNGame] = [:]
 
@@ -82,7 +83,7 @@ final class SNArchiveMockManager: ArchiveManager {
         gamesArchive: {
             var archive: [Date: SNGame] = [:]
             for interval in 1..<10 {
-                archive[.now.addingTimeInterval(Double(interval) * 60)] = .init(
+                archive[.now.addingTimeInterval(Double(interval) * -60)] = .init(
                     turns: [
                         .init(team: .team1, won: 10, forfeit: 1),
                         .init(team: .team2, won: 4, forfeit: 0),
@@ -98,15 +99,15 @@ final class SNArchiveMockManager: ArchiveManager {
     )
 
     func getGameDates() -> [Date] {
-        gamesArchive.keys.sorted()
+        gamesArchive.keys.sorted().reversed()
     }
 
     func readGame(for date: Date) -> SNGame? {
-        print("READING GAME: \(date)")
         return gamesArchive[date]
     }
 
     func saveGame(_ game: SNGame, for date: Date) {
+        print("WROTE GAME: \(game)")
         gamesArchive[date] = game
     }
 

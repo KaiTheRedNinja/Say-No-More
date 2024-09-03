@@ -10,12 +10,17 @@ import Charts
 
 struct GameStatsView: View {
     let game: SNGame
+    let archive: any ArchiveManager
 
     let team1Points: Int
     let team2Points: Int
 
-    init(game: SNGame) {
+    @Environment(\.dismiss)
+    var dismiss
+
+    init(game: SNGame, archive: any ArchiveManager) {
         self.game = game
+        self.archive = archive
         self.team1Points = game.pointsFor(team: .team1)
         self.team2Points = game.pointsFor(team: .team2)
     }
@@ -78,6 +83,9 @@ struct GameStatsView: View {
         .background {
             Color(uiColor: .systemBackground)
         }
+        .onAppear {
+            archive.saveGame(game, for: .now)
+        }
     }
 
     var winnerSection: some View {
@@ -99,6 +107,14 @@ struct GameStatsView: View {
                         .font(.largeTitle)
                         .bold()
                 }
+
+                Spacer()
+                    .frame(height: 30)
+
+                Button("Close") {
+                    dismiss.callAsFunction()
+                }
+                .buttonStyle(.borderedProminent)
             }
             .frame(maxWidth: .infinity)
             .listRowBackground(Color.clear)
@@ -281,6 +297,7 @@ struct GameStatsView: View {
                 .init(team: .team1, won: 1, forfeit: 0),
                 .init(team: .team2, won: 5, forfeit: 2)
             ]
-        )
+        ),
+        archive: SNArchiveMockManager.shared
     )
 }

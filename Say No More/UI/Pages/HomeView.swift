@@ -8,9 +8,14 @@
 import SwiftUI
 
 struct HomeView: View {
+    var cardProvider: any SNCardProvider
     @State var archive: any ArchiveManager
-
     @State var showGamePlay: Bool = false
+
+    init(cardProvider: any SNCardProvider, archive: any ArchiveManager) {
+        self.cardProvider = cardProvider
+        self.archive = archive
+    }
 
     var body: some View {
         GeometryReader { geom in
@@ -64,11 +69,17 @@ struct HomeView: View {
         }
         .fullScreenCover(isPresented: $showGamePlay) {
             // TODO: use actual card provider
-            GameView(gameManager: .init(cardProvider: SNSequentialCardProvider()))
+            GameView(
+                gameManager: .init(cardProvider: cardProvider),
+                archive: archive
+            )
         }
     }
 }
 
 #Preview {
-    HomeView(archive: SNArchiveMockManager.shared)
+    HomeView(
+        cardProvider: SNSequentialCardProvider(),
+        archive: SNArchiveMockManager.shared
+    )
 }

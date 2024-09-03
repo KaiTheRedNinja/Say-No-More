@@ -10,6 +10,12 @@ import SwiftUI
 struct GameView: View {
     @State var gameManager: SNGameManager
     @State var gameState: GameState = .countdown
+    var archive: any ArchiveManager
+
+    init(gameManager: SNGameManager, archive: any ArchiveManager) {
+        self.gameManager = gameManager
+        self.archive = archive
+    }
 
     enum GameState {
         case countdown
@@ -48,7 +54,7 @@ struct GameView: View {
                     }
                 )
             case .finish:
-                GameStatsView(game: gameManager.game)
+                GameStatsView(game: gameManager.game, archive: archive)
             }
         }
         .animation(.default, value: gameManager.turnIsActive)
@@ -61,5 +67,8 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView(gameManager: .init(cardProvider: SNSequentialCardProvider()))
+    GameView(
+        gameManager: .init(cardProvider: SNSequentialCardProvider()),
+        archive: SNArchiveMockManager.shared
+    )
 }
