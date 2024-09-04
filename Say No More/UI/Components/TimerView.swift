@@ -48,14 +48,14 @@ struct TimerView: View {
         GeometryReader { geom in
             ZStack {
                 RoundedRectangle(cornerRadius: .deviceBezel - lineWidth/2)
-                    .stroke(.gray.opacity(0.3), style: .init(lineWidth: lineWidth, lineJoin: .round))
+                    .stroke(.gray.opacity(0.3), style: .init(lineWidth: lineWidth, lineJoin: .miter))
                     .frame(width: geom.size.width, height: geom.size.height)
 
                 RoundedRectangle(cornerRadius: .deviceBezel - lineWidth/2)
                     .trim(from: percentage, to: 1)
                     .stroke(
                         colorFor(percentage: percentage),
-                        style: .init(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
+                        style: .init(lineWidth: lineWidth, lineCap: .round, lineJoin: .miter)
                     )
                     .frame(width: geom.size.height, height: geom.size.width)
                     .rotationEffect(.degrees(-90))

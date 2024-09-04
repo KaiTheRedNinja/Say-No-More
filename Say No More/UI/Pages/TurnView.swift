@@ -116,7 +116,7 @@ struct TurnView: View {
                     .frame(width: 40, height: 40)
                 }
             }
-            .padding([.horizontal, .top], .deviceBezel - 20)
+            .padding([.horizontal, .top], max(.deviceBezel, 55) - 20)
 
             Spacer()
 
@@ -159,7 +159,7 @@ struct TurnView: View {
                 }
                 .symbolEffect(.bounce, value: gameManager.game.turns.last?.forfeitedCards)
             }
-            .padding([.horizontal, .bottom], .deviceBezel - 30)
+            .padding([.horizontal, .bottom], max(.deviceBezel, 55) - 30)
         }
         .buttonStyle(.plain)
     }
