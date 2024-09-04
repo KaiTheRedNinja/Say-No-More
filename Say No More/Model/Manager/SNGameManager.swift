@@ -81,6 +81,12 @@ class SNGameManager {
         regenerateCurrentCard()
     }
 
+    /// Refreshes the current card. Does nothing if ``currentCard`` is not nil.
+    func refreshCurrentCard() {
+        guard !turnIsActive else { return }
+        regenerateCurrentCard()
+    }
+
     /// Regenerates the current card. Does not mark it as won/forfeited, and should only be called once actions on
     /// ``currentCard`` have been finished.
     private func regenerateCurrentCard() {

@@ -49,6 +49,20 @@ struct TurnView: View {
                                 cards.append(.init(card: currentCard))
                             }
                         }
+
+                    if cards.isEmpty {
+                        VStack {
+                            ContentUnavailableView {
+                                Label("Something went wrong", systemImage: "photo.badge.exclamationmark.fill")
+                            } actions: {
+                                Button("Try Again") {
+                                    gameManager.refreshCurrentCard()
+                                }
+                                .buttonStyle(.borderedProminent)
+                            }
+                        }
+                    }
+
                     ForEach(cards.reversed(), id: \.card.id) { card in
                         DraggableCardView(
                             data: card,
@@ -166,7 +180,7 @@ struct TurnView: View {
 }
 
 private struct TurnPreview: View {
-    @State var gameManager: SNGameManager = .init(cardProvider: SNSequentialCardProvider())
+    @State var gameManager: SNGameManager = .init(cardProvider: SNTestingCardProvider())
 
     var body: some View {
         TurnView(
