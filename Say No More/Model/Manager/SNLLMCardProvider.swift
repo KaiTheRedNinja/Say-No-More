@@ -12,11 +12,22 @@ private let replacementThreshold: Int = 5
 class SNLLMCardProvider: SNCardProvider {
     let openAI: OpenAI
     var cardBank: [SNCard]
+    private var wordBank: WordBank
 
     static let shared: SNLLMCardProvider = .init()
 
     private init() {
         self.openAI = OpenAI(apiToken: Secrets.key)
+        if let wordBank = FileSystem.read(WordBank.self, from: "wordBank.json") {
+            self.wordBank = wordBank
+        } else {
+            let filePath = Bundle.main.url(forResource: "nounlist", withExtension: "txt")!
+            let words = (try? String(contentsOf: filePath, encoding: .utf8).split(separator: "\n")) ?? []
+            self.wordBank = .init(
+                index: 0,
+                words: words.shuffled().map { String($0) }
+            )
+        }
         self.cardBank = FileSystem.read([SNCard].self, from: "cardBank.json") ?? []
     }
 
@@ -50,12 +61,11 @@ class SNLLMCardProvider: SNCardProvider {
         }
     }
 
-    private func cardsPrompt(count: Int = replacementThreshold) -> String {
+    private func cardsPrompt(count: Int = replacementThreshold, words: [String]) -> String {
         """
-        You are a vocabulary expert. I want you to come up with five nouns, which aren't common \
-        (no "cat", "phone", etc), but is still likely to be known by a vast majority of people. \
-        Then, for each word, list five words associated with the word, in bullet points. Respond \
-        exactly with this format, with no bolded or italicised words, in JSON:
+        You are a vocabulary expert. I will give you five words, which will be nouns. Then, for each \
+        word, list five other words associated with it, in bullet points. Respond exactly with this \
+        format, with no bolded or italicised words, in JSON:
         {
             "words": [
                 {
@@ -71,13 +81,15 @@ class SNLLMCardProvider: SNCardProvider {
                 // repeat the above \(count) times
             ]
         }
+
+        The words are: \(words.joined(separator: ", ")).
         """
     }
 
     private func generateNewCards() async throws {
         let query = ChatQuery(
             messages: [
-                .init(role: .user, content: cardsPrompt())!
+                .init(role: .user, content: cardsPrompt(words: wordBank.getWords(replacementThreshold)))!
             ],
             model: .gpt4_o_mini,
             responseFormat: .jsonObject
@@ -92,6 +104,25 @@ class SNLLMCardProvider: SNCardProvider {
         cardBank.append(contentsOf: decoded.toSNCards())
 
         FileSystem.write(cardBank, to: "cardBank.json")
+    }
+}
+
+private struct WordBank: Codable {
+    var index: Int
+    var words: [String]
+
+    mutating func getWords(_ count: Int) -> [String] {
+        defer {
+            index = (index + count) % words.count
+        }
+
+        // if its too much, wrap around
+        if count + index >= words.count {
+            index = 0
+            words.shuffle()
+        }
+
+        return Array(words[index..<(index+count)])
     }
 }
 
