@@ -11,6 +11,7 @@ struct HomeView: View {
     var cardProvider: any SNCardProvider
     @State var archive: any ArchiveManager
     @State var showGamePlay: Bool = false
+    @State var pastGame: SNGame?
 
     init(cardProvider: any SNCardProvider, archive: any ArchiveManager) {
         self.cardProvider = cardProvider
@@ -55,6 +56,9 @@ struct HomeView: View {
                             if let game = archive.readGame(for: date) {
                                 GameSummaryView(game: game, date: date)
                                     .padding(10)
+                                    .onTapGesture {
+                                        pastGame = game
+                                    }
                             }
                         }
                     }
@@ -73,6 +77,9 @@ struct HomeView: View {
                 gameManager: .init(cardProvider: cardProvider),
                 archive: archive
             )
+        }
+        .sheet(item: $pastGame) { pastGame in
+            GameStatsView(game: pastGame)
         }
     }
 }

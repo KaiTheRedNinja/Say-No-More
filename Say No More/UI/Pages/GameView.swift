@@ -46,6 +46,7 @@ struct GameView: View {
                 IntermissionView(
                     gameManager: gameManager,
                     gameEnd: {
+                        archive.saveGame(gameManager.game, for: .now)
                         gameState = .finish
                     },
                     turnStart: {
@@ -54,7 +55,7 @@ struct GameView: View {
                     }
                 )
             case .finish:
-                GameStatsView(game: gameManager.game, archive: archive)
+                GameStatsView(game: gameManager.game)
             }
         }
         .animation(.default, value: gameManager.turnIsActive)
