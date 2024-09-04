@@ -1,5 +1,5 @@
 {
-  "originHash" : "0d9c86c708d6a487250b50315d2c0afff7dc926452fafd2aac347d970980b323",
+  "originHash" : "1733f96f461e2df6609edd324cbc6e176820de2c9a314646678b329181ef28eb",
   "pins" : [
     {
       "identity" : "bezelkit",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "6abffff3d98d48cf84c0c66e0c0c45c54b356504",
         "version" : "2024.8.12"
+      }
+    },
+    {
+      "identity" : "openai",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MacPaw/OpenAI",
+      "state" : {
+        "revision" : "843e087929aa806adb611dbca93f9a4a7f28be04",
+        "version" : "0.3.0"
       }
     }
   ],

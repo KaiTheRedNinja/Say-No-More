@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         HomeView(
-            cardProvider: SNLLMCardProvider(),
+            cardProvider: SNLLMCardProvider.shared,
             archive: SNArchiveManager.shared
         )
     }

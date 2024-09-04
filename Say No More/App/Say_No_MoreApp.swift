@@ -12,6 +12,9 @@ struct Say_No_MoreApp: App { // swiftlint:disable:this type_name
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onAppear {
+                    SNLLMCardProvider.shared.ensureCardBank()
+                }
         }
     }
 }

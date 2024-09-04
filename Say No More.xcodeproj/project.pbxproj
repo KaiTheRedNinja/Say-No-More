@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		93EA600D2C84226E00662291 /* BezelKit in Frameworks */ = {isa = PBXBuildFile; productRef = 93EA600C2C84226E00662291 /* BezelKit */; };
+		93EB81BB2C880B3D0089B437 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 93EB81BA2C880B3D0089B437 /* OpenAI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93EB81BB2C880B3D0089B437 /* OpenAI in Frameworks */,
 				93EA600D2C84226E00662291 /* BezelKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -72,6 +74,7 @@
 			name = "Say No More";
 			packageProductDependencies = (
 				93EA600C2C84226E00662291 /* BezelKit */,
+				93EB81BA2C880B3D0089B437 /* OpenAI */,
 			);
 			productName = "Say No More";
 			productReference = 9366A1232C83570D0018F9F3 /* Say No More.app */;
@@ -103,6 +106,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				93EA600B2C84226E00662291 /* XCRemoteSwiftPackageReference "BezelKit" */,
+				93EB81B92C880B3D0089B437 /* XCRemoteSwiftPackageReference "OpenAI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9366A1242C83570D0018F9F3 /* Products */;
@@ -368,6 +372,14 @@
 				minimumVersion = 2024.8.12;
 			};
 		};
+		93EB81B92C880B3D0089B437 /* XCRemoteSwiftPackageReference "OpenAI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MacPaw/OpenAI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -375,6 +387,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 93EA600B2C84226E00662291 /* XCRemoteSwiftPackageReference "BezelKit" */;
 			productName = BezelKit;
+		};
+		93EB81BA2C880B3D0089B437 /* OpenAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93EB81B92C880B3D0089B437 /* XCRemoteSwiftPackageReference "OpenAI" */;
+			productName = OpenAI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
